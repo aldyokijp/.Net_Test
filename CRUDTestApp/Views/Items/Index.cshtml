@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CRUDTestApp.Models.Item>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-4">
+    <h2>Item List</h2>
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Description</td>
+                        <td>@item.CreatedAt.ToShortDateString()</td>
+                        <td>
+                            <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", new { id = item.Id })">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = item.Id })">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <a class="btn btn-primary mt-3" href="@Url.Action("Create")">Add New Item</a>
+</div>
