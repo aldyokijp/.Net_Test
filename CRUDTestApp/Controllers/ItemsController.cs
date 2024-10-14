@@ -32,8 +32,7 @@ namespace CRUDTestApp.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var item = await _context.Items.FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
                 return NotFound();
@@ -49,17 +48,20 @@ namespace CRUDTestApp.Controllers
         }
 
         // POST: Items/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedAt")] Item item)
+        public async Task<IActionResult> Create([Bind("Name,Description")] Item item)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(item);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Set TempData for success message and toast notification
+                TempData["Success"] = "Item created successfully!";
+                TempData["ToastMessage"] = "You have added a new item.";
+
+                return RedirectToAction("Index");
             }
             return View(item);
         }
@@ -81,8 +83,6 @@ namespace CRUDTestApp.Controllers
         }
 
         // POST: Items/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedAt")] Item item)
@@ -98,6 +98,10 @@ namespace CRUDTestApp.Controllers
                 {
                     _context.Update(item);
                     await _context.SaveChangesAsync();
+
+                    // Set TempData for success message and toast notification
+                    TempData["Success"] = "Item updated successfully!";
+                    TempData["ToastMessage"] = $"Item '{item.Name}' has been updated.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +127,7 @@ namespace CRUDTestApp.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Items
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var item = await _context.Items.FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
                 return NotFound();
@@ -142,9 +145,13 @@ namespace CRUDTestApp.Controllers
             if (item != null)
             {
                 _context.Items.Remove(item);
+                await _context.SaveChangesAsync();
+
+                // Set TempData for success message and toast notification
+                TempData["Success"] = "Item deleted successfully!";
+                TempData["ToastMessage"] = $"Item '{item.Name}' has been removed.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
